@@ -20,6 +20,7 @@ class PhpExcelTemplator
     public const BEFORE_INSERT_PARAMS = 'BeforeInsertParams';
     public const AFTER_INSERT_PARAMS  = 'AfterInsertParams';
     public const BEFORE_SAVE          = 'BeforeSave';
+    public const BEFORE_LOAD          = 'BeforeLoad';
 
     /**
      * @param string $templateFile Path to *.xlsx template file
@@ -61,7 +62,11 @@ class PhpExcelTemplator
      */
 	protected static function getSpreadsheet($templateFile): Spreadsheet
     {
-        return IOFactory::load($templateFile);
+        $reader = IOFactory::createReaderForFile($templateFile);
+        if (isset($events[self::BEFORE_LOAD]) && is_callable($events[self::BEFORE_LOAD])) {
+            $events[self::BEFORE_LOAD]($reader);
+        }
+        return $reader->load($templateFile);
     }
 
     /**
