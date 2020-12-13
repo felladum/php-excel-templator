@@ -32,7 +32,7 @@ class PhpExcelTemplator
      */
 	public static function outputToFile($templateFile, $outputFile, $params, $callbacks=[], $events=[]): void
 	{
-		$spreadsheet = static::getSpreadsheet($templateFile);
+		$spreadsheet = static::getSpreadsheet($templateFile, $events);
 		$sheet = $spreadsheet->getActiveSheet();
 		$templateVarsArr = $sheet->toArray();
 		static::renderWorksheet($sheet, $templateVarsArr, $params, $callbacks, $events);
@@ -49,7 +49,7 @@ class PhpExcelTemplator
      */
 	public static function saveToFile($templateFile, $outputFile, $params, $callbacks=[], $events=[]): void
 	{
-        $spreadsheet = static::getSpreadsheet($templateFile);
+        $spreadsheet = static::getSpreadsheet($templateFile, $events);
 		$sheet = $spreadsheet->getActiveSheet();
 		$templateVarsArr = $sheet->toArray();
 		static::renderWorksheet($sheet, $templateVarsArr, $params, $callbacks, $events);
@@ -60,7 +60,7 @@ class PhpExcelTemplator
      * @param string $templateFile Path to *.xlsx template file
      * @return Spreadsheet
      */
-	protected static function getSpreadsheet($templateFile): Spreadsheet
+	protected static function getSpreadsheet($templateFile, $events): Spreadsheet
     {
         $reader = IOFactory::createReaderForFile($templateFile);
         if (isset($events[self::BEFORE_LOAD]) && is_callable($events[self::BEFORE_LOAD])) {
